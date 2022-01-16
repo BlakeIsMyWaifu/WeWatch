@@ -1,11 +1,13 @@
-import { Container } from '@mui/material'
+import Header from 'components/Header'
 import type { NextPage } from 'next'
+import GlobalCssOverride from 'utils/theme'
 
 const Home: NextPage = () => {
 	return (
-		<Container>
-			<p>home</p>
-		</Container>
+		<>
+			<GlobalCssOverride />
+			<Header />
+		</>
 	)
 }
 
