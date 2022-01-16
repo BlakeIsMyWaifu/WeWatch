@@ -1,0 +1,17 @@
+{
+	"extends": "next/core-web-vitals",
+	"rules": {
+		"indent": [
+			"warn",
+			"tab"
+		],
+		"quotes": [
+			"warn",
+			"single"
+		],
+		"jsx-quotes": [
+			"warn",
+			"prefer-single"
+		]
+	}
+}
