@@ -1,19 +1,24 @@
-import axios from 'axios'
-import { NextApiRequest, NextApiResponse } from 'next'
+export type SearchResult = {
+	success: true;
+	data: SearchData;
+} | {
+	success: false;
+	data: SearchError;
+}
 
-interface Error {
+export interface SearchError {
 	status: number;
 	message: string;
 }
 
-interface SearchData {
+export interface SearchData {
 	page: number;
 	results: (MovieResult | TVResult | PersonResult)[];
 	total_results: number;
 	total_pages: number;
 }
 
-interface MovieResult {
+export interface MovieResult {
 	poster_path?: string | null;
 	adult?: boolean;
 	overview?: string;
@@ -31,7 +36,7 @@ interface MovieResult {
 	vote_average?: number;
 }
 
-interface TVResult {
+export interface TVResult {
 	poster_path?: string | null;
 	popularity?: number;
 	id?: number;
@@ -58,21 +63,17 @@ interface PersonResult {
 	popularity?: number;
 }
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<SearchData | Error>) => {
+const getSearchData = async (query: string, page = 1): Promise<SearchResult> => {
 
-	const { query, page = 1 } = req.query
-	if (!query) {
-		res.status(400).send({ status: 400, message: 'Missing Query' })
-		return
-	}
+	const result = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${process.env.API}&language=en-US&query=${query}&page=${page}&include_adult=true`)
 
-	const result = await axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${process.env.API}&language=en-US&query=${query}&page=${page}&include_adult=true`)
 	if (result.status !== 200) {
-		res.status(400).send({ status: result.status, message: result.statusText })
-		return
+		return { success: false, data: { status: result.status, message: result.statusText } }
 	}
 
-	res.status(200).json(result.data)
+	const data: SearchData = await result.json()
+
+	return { success: true, data }
 }
 
-export default handler
+export default getSearchData

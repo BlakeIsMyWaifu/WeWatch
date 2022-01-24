@@ -7,6 +7,8 @@ import InputBase from '@mui/material/InputBase'
 import { alpha, styled } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',
@@ -50,6 +52,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 const Header = () => {
+
+	const [searchValue, setSearchValue] = useState<string>('')
+	const router = useRouter()
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position='static'>
@@ -78,6 +84,15 @@ const Header = () => {
 						<StyledInputBase
 							placeholder='Search…'
 							inputProps={{ 'aria-label': 'search' }}
+							value={searchValue}
+							onChange={event => {
+								setSearchValue(event.target.value)
+							}}
+							onKeyPress={event => {
+								if (event.key !== 'Enter' || searchValue.length === 0) return
+								router.push(`/search/${searchValue}`)
+								setSearchValue('')
+							}}
 						/>
 					</Search>
 				</Toolbar>

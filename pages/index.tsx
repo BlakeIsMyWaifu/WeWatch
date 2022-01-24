@@ -1,13 +1,11 @@
-import Header from 'components/Header'
-import type { NextPage } from 'next'
-import GlobalCssOverride from 'utils/theme'
+import App from 'components/App'
+import React from 'react'
 
-const Home: NextPage = () => {
+const Home: React.FC = () => {
 	return (
-		<>
-			<GlobalCssOverride />
-			<Header />
-		</>
+		<App>
+
+		</App>
 	)
 }
 
