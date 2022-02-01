@@ -53,8 +53,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const Header = () => {
 
-	const [searchValue, setSearchValue] = useState<string>('')
 	const router = useRouter()
+
+	const [searchValue, setSearchValue] = useState<string>('')
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -85,9 +86,7 @@ const Header = () => {
 							placeholder='Search…'
 							inputProps={{ 'aria-label': 'search' }}
 							value={searchValue}
-							onChange={event => {
-								setSearchValue(event.target.value)
-							}}
+							onChange={event => setSearchValue(event.target.value)}
 							onKeyPress={event => {
 								if (event.key !== 'Enter' || searchValue.length === 0) return
 								router.push(`/search/${searchValue}`)

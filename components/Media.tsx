@@ -1,6 +1,11 @@
 import { Button, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@mui/material'
 import Card from '@mui/material/Card'
+import { useState } from 'react'
+import { clearEmptyLists } from 'utils/cookies'
 import { MovieResult, TVResult } from 'utils/getSearchData'
+import parseMediaData from 'utils/parseMediaData'
+
+import Lists from './Lists'
 
 interface MediaProps {
 	data: MovieResult | TVResult;
@@ -8,51 +13,59 @@ interface MediaProps {
 
 const Media: React.FC<MediaProps> = ({ data }) => {
 
-	const isMovie = data.media_type === 'movie'
+	const parsedData = parseMediaData(data)
 
-	const parsedData = {
-		title: isMovie ? data.title : data.name,
-		backdrop: data.poster_path
-	}
+	const [openList, setOpenList] = useState<boolean>(false)
 
 	return (
 		<Card sx={{
 			width: 200,
+			height: 450,
 			display: 'flex',
 			flexDirection: 'column',
 			justifyContent: 'space-between'
 		}}>
-			<CardActionArea>
-				<CardMedia
-					component='img'
-					image={`https://image.tmdb.org/t/p/w500${parsedData.backdrop}`}
-					alt={`${parsedData.title} Backdrop`}
-				/>
-				<CardContent>
-					<Typography
-						gutterBottom
-						variant='body1'
-						align='center'
-						component='div'
-					>
-						{parsedData.title}
-					</Typography>
-					<Typography
-						variant='body2'
-						align='center'
-						color='text.secondary'
-					>
-						{data.media_type.toUpperCase()}
-					</Typography>
-				</CardContent>
-			</CardActionArea>
+			{
+				openList ?
+					<Lists data={parsedData} /> :
+					<CardActionArea>
+						<CardMedia
+							component='img'
+							image={`https://image.tmdb.org/t/p/w500${parsedData.backdrop}`}
+							alt={`${parsedData.title} Backdrop`}
+						/>
+						<CardContent>
+							<Typography
+								gutterBottom
+								variant='body1'
+								align='center'
+								component='div'
+							>
+								{parsedData.title}
+							</Typography>
+							<Typography
+								variant='body2'
+								align='center'
+								color='text.secondary'
+							>
+								{data.media_type.toUpperCase()}
+							</Typography>
+						</CardContent>
+					</CardActionArea>
+			}
 			<CardActions>
 				<Button
 					size='small'
 					color='primary'
 					fullWidth
+					onClick={() => {
+						if (openList) {
+							clearEmptyLists()
+						}
+						setOpenList(!openList)
+					}}
 				>
-					Add to list
+					{openList ? 'Close lists' : 'Add to list'}
 				</Button>
 			</CardActions>
 		</Card>
