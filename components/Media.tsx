@@ -2,18 +2,16 @@ import { Button, CardActionArea, CardActions, CardContent, CardMedia, Typography
 import Card from '@mui/material/Card'
 import { useState } from 'react'
 import { clearEmptyLists } from 'utils/cookies'
-import { MovieResult, TVResult } from 'utils/getSearchData'
-import parseMediaData from 'utils/parseMediaData'
+import { MediaData } from 'utils/parseMediaData'
 
 import Lists from './Lists'
 
 interface MediaProps {
-	data: MovieResult | TVResult;
+	mediaData: MediaData;
+	forceRerender?: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }
 
-const Media: React.FC<MediaProps> = ({ data }) => {
-
-	const parsedData = parseMediaData(data)
+const Media: React.FC<MediaProps> = ({ mediaData, forceRerender }) => {
 
 	const [openList, setOpenList] = useState<boolean>(false)
 
@@ -27,12 +25,12 @@ const Media: React.FC<MediaProps> = ({ data }) => {
 		}}>
 			{
 				openList ?
-					<Lists data={parsedData} /> :
+					<Lists data={mediaData} /> :
 					<CardActionArea>
 						<CardMedia
 							component='img'
-							image={`https://image.tmdb.org/t/p/w500${parsedData.backdrop}`}
-							alt={`${parsedData.title} Backdrop`}
+							image={`https://image.tmdb.org/t/p/w500${mediaData.backdrop}`}
+							alt={`${mediaData.title} Backdrop`}
 						/>
 						<CardContent>
 							<Typography
@@ -41,14 +39,14 @@ const Media: React.FC<MediaProps> = ({ data }) => {
 								align='center'
 								component='div'
 							>
-								{parsedData.title}
+								{mediaData.title}
 							</Typography>
 							<Typography
 								variant='body2'
 								align='center'
 								color='text.secondary'
 							>
-								{data.media_type.toUpperCase()}
+								{mediaData.type.toUpperCase()}
 							</Typography>
 						</CardContent>
 					</CardActionArea>
@@ -59,6 +57,9 @@ const Media: React.FC<MediaProps> = ({ data }) => {
 					color='primary'
 					fullWidth
 					onClick={() => {
+						if (forceRerender) {
+							forceRerender[1](!forceRerender[0])
+						}
 						if (openList) {
 							clearEmptyLists()
 						}

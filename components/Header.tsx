@@ -7,6 +7,7 @@ import InputBase from '@mui/material/InputBase'
 import { alpha, styled } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
@@ -58,8 +59,12 @@ const Header = () => {
 	const [searchValue, setSearchValue] = useState<string>('')
 
 	return (
-		<Box sx={{ flexGrow: 1 }}>
-			<AppBar position='static'>
+		<Box sx={{
+			flexGrow: 1
+		}}>
+			<AppBar
+				position='static'
+			>
 				<Toolbar>
 					<IconButton
 						size='large'
@@ -70,14 +75,23 @@ const Header = () => {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography
-						variant='h6'
-						noWrap
-						component='div'
-						sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+					<Link
+						href='/'
+						passHref
 					>
-						WeWatch
-					</Typography>
+						<Typography
+							variant='h6'
+							noWrap
+							component='div'
+							sx={{
+								flexGrow: 1,
+								display: { xs: 'none', sm: 'block' },
+								cursor: 'pointer'
+							}}
+						>
+							WeWatch
+						</Typography>
+					</Link>
 					<Search>
 						<SearchIconWrapper>
 							<SearchIcon />

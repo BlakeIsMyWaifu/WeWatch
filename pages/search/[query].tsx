@@ -4,6 +4,7 @@ import Media from 'components/Media'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import React, { useEffect, useState } from 'react'
 import getSearchData, { MovieResult, SearchData, SearchError, SearchResult, TVResult } from 'utils/getSearchData'
+import parseMediaData from 'utils/parseMediaData'
 
 interface SearchParserProps {
 	searchResult: SearchResult;
@@ -39,7 +40,7 @@ const Search: React.FC<SearchProps> = ({ searchData }) => {
 		}}>
 			{
 				data.map((result, i) => {
-					return <Media key={i} data={result} />
+					return <Media key={i} mediaData={parseMediaData(result)} />
 				})
 			}
 		</Box>

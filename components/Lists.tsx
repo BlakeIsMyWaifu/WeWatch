@@ -16,15 +16,13 @@ const Lists: React.FC<ListsProps> = ({ data }) => {
 	const [refresh, setRefresh] = useState<boolean>(true)
 
 	return (
-		<List
-			sx={{
-				width: '100%',
-				maxWidth: 200,
-				maxHeight: 450,
-				overflowY: 'scroll',
-				bg: 'background.paper'
-			}}
-		>
+		<List sx={{
+			width: '100%',
+			maxWidth: 200,
+			maxHeight: 450,
+			overflowY: 'scroll',
+			bg: 'background.paper'
+		}}>
 			{
 				Object.keys(lists).map(list => {
 					const isOnList = !!lists[list][data.id]
@@ -46,10 +44,10 @@ const Lists: React.FC<ListsProps> = ({ data }) => {
 							</ListItemIcon>
 							<ListItemText
 								inset
+								primary={list}
 								sx={{
 									paddingLeft: 4
 								}}
-								primary={list}
 							/>
 						</ListItemButton>
 					</ListItem>

@@ -4,6 +4,7 @@ export interface MediaData {
 	title: string;
 	backdrop: string;
 	id: number;
+	type: 'movie' | 'tv';
 }
 
 const parseMediaData = (data: MovieResult | TVResult): MediaData => {
@@ -12,7 +13,8 @@ const parseMediaData = (data: MovieResult | TVResult): MediaData => {
 	const parsedData: MediaData = {
 		title: (isMovie ? data.title : data.name) ?? '',
 		backdrop: data.poster_path ?? '',
-		id: data.id ?? -1
+		id: data.id ?? -1,
+		type: data.media_type
 	}
 
 	return parsedData

@@ -6,7 +6,7 @@ interface MediaCookie extends MediaData {
 	list: string;
 }
 
-type MediaListCookie = Record<string, Record<string, MediaCookie>>
+export type MediaListCookie = Record<string, Record<string, MediaCookie>>
 
 export const getLists = (): MediaListCookie => JSON.parse(Cookies.get('list') ?? '{}')
 
