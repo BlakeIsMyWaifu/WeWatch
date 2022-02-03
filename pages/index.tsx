@@ -1,17 +1,18 @@
 import { Grid, Stack, Typography } from '@mui/material'
 import App from 'components/App'
 import Media from 'components/Media'
+import useMediaList, { MediaListCookie } from 'hooks/useMediaList'
 import React, { useEffect, useState } from 'react'
-import { MediaListCookie, getLists } from 'utils/cookies'
 
 const Home: React.FC = () => {
 
+	const cookies = useMediaList()
+
 	const [lists, setLists] = useState<MediaListCookie>({})
-	const [rerender, setRerender] = useState<boolean>(true)
 
 	useEffect(() => {
-		setLists(getLists())
-	}, [rerender])
+		setLists(cookies.lists)
+	}, [cookies])
 
 	return (
 		<App>
@@ -42,7 +43,7 @@ const Home: React.FC = () => {
 										return <Media
 											key={mediaData.id}
 											mediaData={mediaData}
-											forceRerender={[rerender, setRerender]}
+											cookies={cookies}
 										/>
 									})
 								}

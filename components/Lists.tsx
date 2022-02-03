@@ -1,19 +1,19 @@
 import DoneIcon from '@mui/icons-material/Done'
 import { Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField } from '@mui/material'
+import { UseMediaList } from 'hooks/useMediaList'
 import React, { useState } from 'react'
-import { addList, addMedia, getLists, removeMedia } from 'utils/cookies'
 import { MediaData } from 'utils/parseMediaData'
 
 interface ListsProps {
-	data: MediaData
+	data: MediaData;
+	cookies: UseMediaList;
 }
 
-const Lists: React.FC<ListsProps> = ({ data }) => {
+const Lists: React.FC<ListsProps> = ({ data, cookies }) => {
 
-	const lists = getLists()
+	const { lists, addMedia, removeMedia, addList } = cookies
 
 	const [newListValue, setNewListValue] = useState<string>('')
-	const [refresh, setRefresh] = useState<boolean>(true)
 
 	return (
 		<List sx={{
@@ -33,7 +33,6 @@ const Lists: React.FC<ListsProps> = ({ data }) => {
 						<ListItemButton
 							onClick={() => {
 								isOnList ? removeMedia(data.id, list) : addMedia(data, list)
-								setRefresh(!refresh)
 							}}
 						>
 							<ListItemIcon sx={{

@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import App from 'components/App'
 import Media from 'components/Media'
+import useMediaList from 'hooks/useMediaList'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import React, { useEffect, useState } from 'react'
 import getSearchData, { MovieResult, SearchData, SearchError, SearchResult, TVResult } from 'utils/getSearchData'
@@ -24,6 +25,7 @@ interface SearchProps {
 
 const Search: React.FC<SearchProps> = ({ searchData }) => {
 
+	const cookies = useMediaList()
 	const [data, setData] = useState<(MovieResult | TVResult)[]>(searchData.results.filter(value => value.media_type !== 'person') as (MovieResult | TVResult)[])
 
 	useEffect(() => {
@@ -40,7 +42,7 @@ const Search: React.FC<SearchProps> = ({ searchData }) => {
 		}}>
 			{
 				data.map((result, i) => {
-					return <Media key={i} mediaData={parseMediaData(result)} />
+					return <Media key={i} mediaData={parseMediaData(result)} cookies={cookies} />
 				})
 			}
 		</Box>

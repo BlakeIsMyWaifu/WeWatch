@@ -50,6 +50,7 @@
 				"argsIgnorePattern": "^_",
 				"varsIgnorePattern": "^React$"
 			}
-		]
+		],
+		"@typescript-eslint/no-empty-function": "warn"
 	}
 }

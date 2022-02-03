@@ -1,17 +1,19 @@
 import { Button, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@mui/material'
 import Card from '@mui/material/Card'
+import { UseMediaList } from 'hooks/useMediaList'
 import { useState } from 'react'
-import { clearEmptyLists } from 'utils/cookies'
 import { MediaData } from 'utils/parseMediaData'
 
 import Lists from './Lists'
 
 interface MediaProps {
 	mediaData: MediaData;
-	forceRerender?: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+	cookies: UseMediaList;
 }
 
-const Media: React.FC<MediaProps> = ({ mediaData, forceRerender }) => {
+const Media: React.FC<MediaProps> = ({ mediaData, cookies }) => {
+
+	const { clearEmptyLists } = cookies
 
 	const [openList, setOpenList] = useState<boolean>(false)
 
@@ -25,7 +27,7 @@ const Media: React.FC<MediaProps> = ({ mediaData, forceRerender }) => {
 		}}>
 			{
 				openList ?
-					<Lists data={mediaData} /> :
+					<Lists data={mediaData} cookies={cookies} /> :
 					<CardActionArea>
 						<CardMedia
 							component='img'
@@ -57,9 +59,6 @@ const Media: React.FC<MediaProps> = ({ mediaData, forceRerender }) => {
 					color='primary'
 					fullWidth
 					onClick={() => {
-						if (forceRerender) {
-							forceRerender[1](!forceRerender[0])
-						}
 						if (openList) {
 							clearEmptyLists()
 						}
