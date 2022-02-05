@@ -1,23 +1,3 @@
-export type SearchResult = {
-	success: true;
-	data: SearchData;
-} | {
-	success: false;
-	data: SearchError;
-}
-
-export interface SearchError {
-	status: number;
-	message: string;
-}
-
-export interface SearchData {
-	page: number;
-	results: (MovieResult | TVResult | PersonResult)[];
-	total_results: number;
-	total_pages: number;
-}
-
 export interface MovieResult {
 	poster_path?: string | null;
 	adult?: boolean;
@@ -53,7 +33,7 @@ export interface TVResult {
 	original_name?: string;
 }
 
-interface PersonResult {
+export interface PersonResult {
 	profile_path?: string | null;
 	adult?: boolean;
 	id?: number;
@@ -62,18 +42,3 @@ interface PersonResult {
 	name?: string;
 	popularity?: number;
 }
-
-const getSearchData = async (query: string, page = 1): Promise<SearchResult> => {
-
-	const result = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${process.env.API}&language=en-US&query=${query}&page=${page}&include_adult=true`)
-
-	if (result.status !== 200) {
-		return { success: false, data: { status: result.status, message: result.statusText } }
-	}
-
-	const data: SearchData = await result.json()
-
-	return { success: true, data }
-}
-
-export default getSearchData

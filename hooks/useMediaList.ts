@@ -65,9 +65,8 @@ const useMediaList = (): UseMediaList => {
 	const clearEmptyLists = (): void => {
 		const filteredList = Object.entries(lists).filter(([_key, value]) => Object.keys(value).length)
 		const updatedLists: MediaListCookie = Object.assign({}, ...filteredList.map(([key, value]) => ({ [key]: value })))
-		console.log({ listValue, lists, filteredList, updatedLists })
 
-		// updateList(updatedLists)
+		updateList(updatedLists)
 	}
 
 	return {

@@ -4,17 +4,18 @@ import Media from 'components/Media'
 import useMediaList from 'hooks/useMediaList'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import React, { useEffect, useState } from 'react'
-import getSearchData, { MovieResult, SearchData, SearchError, SearchResult, TVResult } from 'utils/getSearchData'
+import getData, { GetData, GetDataError } from 'utils/getData'
+import { MovieResult, PersonResult, TVResult } from 'utils/mediaTypes'
 import parseMediaData from 'utils/parseMediaData'
 
 interface SearchParserProps {
-	searchResult: SearchResult;
+	searchResult: GetData<SearchData>;
 }
 
 const SearchParser: React.FC<SearchParserProps> = ({ searchResult }) => {
 	return (
 		<App>
-			{searchResult.success ? <Search searchData={searchResult.data} /> : <SearchErrora searchError={searchResult.data} />}
+			{searchResult.success ? <Search searchData={searchResult.data} /> : <SearchError searchError={searchResult.data} />}
 		</App>
 	)
 }
@@ -50,22 +51,35 @@ const Search: React.FC<SearchProps> = ({ searchData }) => {
 }
 
 interface SearchErrorProps {
-	searchError: SearchError;
+	searchError: GetDataError;
 }
 
-const SearchErrora: React.FC<SearchErrorProps> = ({ searchError }) => {
+const SearchError: React.FC<SearchErrorProps> = ({ searchError }) => {
 	return (
 		<p>Error Status ({searchError.status}): {searchError.message}</p>
 	)
+}
+
+export interface SearchData {
+	page: number;
+	results: (MovieResult | TVResult | PersonResult)[];
+	total_results: number;
+	total_pages: number;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
 
 	const { query } = context.query
 
-	const data = await getSearchData(query as string, 1)
+	const queryString = typeof query === 'object' ? query[0] : query ?? ''
 
-	console.log(data)
+	const parameters = new URLSearchParams()
+	parameters.set('language', 'en')
+	parameters.set('query', queryString)
+	parameters.set('page', '1')
+	parameters.set('include_adult', 'true')
+
+	const data = await getData<SearchData>('search/multi', parameters)
 
 	return {
 		props: {
