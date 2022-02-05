@@ -42,3 +42,14 @@ export interface PersonResult {
 	name?: string;
 	popularity?: number;
 }
+
+export interface MediaResult {
+	page: number;
+	results: (MovieResult | TVResult | PersonResult)[];
+	total_results: number;
+	total_pages: number;
+}
+
+export const removePeople = (mediaData: MediaResult): (MovieResult | TVResult)[] => {
+	return mediaData.results.filter(value => value.media_type !== 'person') as (MovieResult | TVResult)[]
+}

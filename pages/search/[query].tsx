@@ -1,37 +1,42 @@
 import Box from '@mui/material/Box'
 import App from 'components/App'
 import Media from 'components/Media'
+import ParserError from 'components/ParserError'
 import useMediaList from 'hooks/useMediaList'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import React, { useEffect, useState } from 'react'
-import getData, { GetData, GetDataError } from 'utils/getData'
-import { MovieResult, PersonResult, TVResult } from 'utils/mediaTypes'
+import getData, { GetData } from 'utils/getData'
+import { MediaResult, MovieResult, TVResult, removePeople } from 'utils/mediaTypes'
 import parseMediaData from 'utils/parseMediaData'
 
 interface SearchParserProps {
-	searchResult: GetData<SearchData>;
+	searchResult: GetData<MediaResult>;
 }
 
 const SearchParser: React.FC<SearchParserProps> = ({ searchResult }) => {
 	return (
 		<App>
-			{searchResult.success ? <Search searchData={searchResult.data} /> : <SearchError searchError={searchResult.data} />}
+			{
+				searchResult.success ?
+					<Search searchData={searchResult.data} /> :
+					<ParserError error={searchResult.data} />
+			}
 		</App>
 	)
 }
 
 interface SearchProps {
-	searchData: SearchData;
+	searchData: MediaResult;
 }
 
 const Search: React.FC<SearchProps> = ({ searchData }) => {
 
 	const cookies = useMediaList()
-	const [data, setData] = useState<(MovieResult | TVResult)[]>(searchData.results.filter(value => value.media_type !== 'person') as (MovieResult | TVResult)[])
+	const [data, setData] = useState<(MovieResult | TVResult)[]>(removePeople(searchData))
 
 	useEffect(() => {
 		if (searchData.page === 1) {
-			setData(searchData.results.filter(value => value.media_type !== 'person') as (MovieResult | TVResult)[])
+			setData(removePeople(searchData))
 		}
 	}, [searchData])
 
@@ -50,23 +55,6 @@ const Search: React.FC<SearchProps> = ({ searchData }) => {
 	)
 }
 
-interface SearchErrorProps {
-	searchError: GetDataError;
-}
-
-const SearchError: React.FC<SearchErrorProps> = ({ searchError }) => {
-	return (
-		<p>Error Status ({searchError.status}): {searchError.message}</p>
-	)
-}
-
-export interface SearchData {
-	page: number;
-	results: (MovieResult | TVResult | PersonResult)[];
-	total_results: number;
-	total_pages: number;
-}
-
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
 
 	const { query } = context.query
@@ -79,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 	parameters.set('page', '1')
 	parameters.set('include_adult', 'true')
 
-	const data = await getData<SearchData>('search/multi', parameters)
+	const data = await getData<MediaResult>('search/multi', parameters)
 
 	return {
 		props: {

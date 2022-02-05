@@ -1,4 +1,4 @@
-import { MovieResult, TVResult } from './getSearchData'
+import { MovieResult, TVResult } from './mediaTypes'
 
 export interface MediaData {
 	title: string;
