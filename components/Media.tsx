@@ -1,5 +1,12 @@
-import { Button, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@mui/material'
-import Card from '@mui/material/Card'
+import {
+	Button,
+	Card,
+	CardActionArea,
+	CardActions,
+	CardContent,
+	CardMedia,
+	Typography
+} from '@mui/material'
 import { UseMediaList } from 'hooks/useMediaList'
 import { useState } from 'react'
 import { MediaData } from 'utils/parseMediaData'

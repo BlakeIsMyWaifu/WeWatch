@@ -1,4 +1,4 @@
-import Box from '@mui/material/Box'
+import { Box } from '@mui/material'
 import App from 'components/App'
 import Media from 'components/Media'
 import ParserError from 'components/ParserError'

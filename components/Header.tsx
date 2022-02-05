@@ -1,15 +1,30 @@
-import MenuIcon from '@mui/icons-material/Menu'
-import SearchIcon from '@mui/icons-material/Search'
-import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import InputBase from '@mui/material/InputBase'
+import { Menu as MenuIcon, Search as SearchIcon } from '@mui/icons-material'
+import { IconButton, InputBase, Toolbar, Typography } from '@mui/material'
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { alpha, styled } from '@mui/material/styles'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import React, { useState } from 'react'
+
+interface AppBarProps extends MuiAppBarProps {
+	open?: boolean
+	drawerWidth?: number;
+}
+
+const AppBar = styled(MuiAppBar, { shouldForwardProp: prop => prop !== 'open' && prop !== 'drawerWidth' })<AppBarProps>(({ theme, open, drawerWidth }) => ({
+	zIndex: theme.zIndex.drawer + 1,
+	transition: theme.transitions.create(['width', 'margin'], {
+		easing: theme.transitions.easing.sharp,
+		duration: theme.transitions.duration.leavingScreen
+	}),
+	...(open && {
+		marginLeft: drawerWidth,
+		width: `calc(100% - ${drawerWidth}px)`,
+		transition: theme.transitions.create(['width', 'margin'], {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.enteringScreen
+		})
+	})
+}))
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',
@@ -52,65 +67,66 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	}
 }))
 
-const Header = () => {
+interface HeaderProps {
+	open: boolean;
+	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	drawerWidth: number;
+}
+
+const Header: React.FC<HeaderProps> = ({ open, setOpen, drawerWidth }) => {
 
 	const router = useRouter()
 
 	const [searchValue, setSearchValue] = useState<string>('')
 
 	return (
-		<Box sx={{
-			flexGrow: 1
-		}}>
-			<AppBar
-				position='static'
-			>
-				<Toolbar>
-					<IconButton
-						size='large'
-						edge='start'
-						color='inherit'
-						aria-label='open drawer'
-						sx={{ mr: 2 }}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Link
-						href='/'
-						passHref
-					>
-						<Typography
-							variant='h6'
-							noWrap
-							component='div'
-							sx={{
-								flexGrow: 1,
-								display: { xs: 'none', sm: 'block' },
-								cursor: 'pointer'
-							}}
-						>
-							WeWatch
-						</Typography>
-					</Link>
-					<Search>
-						<SearchIconWrapper>
-							<SearchIcon />
-						</SearchIconWrapper>
-						<StyledInputBase
-							placeholder='Search…'
-							inputProps={{ 'aria-label': 'search' }}
-							value={searchValue}
-							onChange={event => setSearchValue(event.target.value)}
-							onKeyPress={event => {
-								if (event.key !== 'Enter' || searchValue.length === 0) return
-								router.push(`/search/${searchValue}`)
-								setSearchValue('')
-							}}
-						/>
-					</Search>
-				</Toolbar>
-			</AppBar>
-		</Box>
+		<AppBar
+			position='fixed'
+			open={open}
+			drawerWidth={drawerWidth}
+		>
+			<Toolbar>
+				<IconButton
+					color='inherit'
+					aria-label='open drawer'
+					onClick={() => setOpen(true)}
+					edge='start'
+					sx={{
+						marginRight: '36px',
+						...(open && { display: 'none' })
+					}}
+				>
+					<MenuIcon />
+				</IconButton>
+				<Typography
+					variant='h6'
+					noWrap
+					component='div'
+					sx={{
+						flexGrow: 1,
+						display: { xs: 'none', sm: 'block' }
+					}}
+				>
+					WeWatch
+				</Typography>
+				<Search>
+					<SearchIconWrapper>
+						<SearchIcon />
+					</SearchIconWrapper>
+					<StyledInputBase
+						placeholder='Search…'
+						inputProps={{ 'aria-label': 'search' }}
+						value={searchValue}
+						onChange={event => setSearchValue(event.target.value)}
+						onKeyPress={event => {
+							if (event.key !== 'Enter' || searchValue.length === 0) return
+							router.push(`/search/${searchValue}`)
+							setSearchValue('')
+						}}
+					/>
+				</Search>
+			</Toolbar>
+		</AppBar>
 	)
 }
 

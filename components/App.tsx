@@ -1,8 +1,9 @@
-import Box from '@mui/material/Box'
+import { CssBaseline } from '@mui/material'
+import { Box } from '@mui/material'
 import React from 'react'
 import GlobalCssOverride from 'utils/theme'
 
-import Header from './Header'
+import SideDrawer from './SideDrawer'
 
 const App: React.FC = ({ children }) => {
 	return (
@@ -10,13 +11,15 @@ const App: React.FC = ({ children }) => {
 			display: 'flex',
 			flexDirection: 'column'
 		}}>
+			<CssBaseline />
 			<GlobalCssOverride />
-			<Header />
-			<Box sx={{
-				margin: '8px'
-			}}>
-				{children}
-			</Box>
+			<SideDrawer >
+				<Box sx={{
+					margin: '8px'
+				}}>
+					{children}
+				</Box>
+			</SideDrawer>
 		</Box>
 	)
 }
