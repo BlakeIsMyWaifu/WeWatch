@@ -3,6 +3,7 @@ import App from 'components/App'
 import Media from 'components/Media'
 import ParserError from 'components/ParserError'
 import useMediaList from 'hooks/useMediaList'
+import useSearchHistory from 'hooks/useSearchHistory'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import React, { useEffect, useState } from 'react'
 import getData, { GetData } from 'utils/getData'
@@ -11,14 +12,15 @@ import parseMediaData from 'utils/parseMediaData'
 
 interface SearchParserProps {
 	searchResult: GetData<MediaResult>;
+	query: string;
 }
 
-const SearchParser: React.FC<SearchParserProps> = ({ searchResult }) => {
+const SearchParser: React.FC<SearchParserProps> = ({ searchResult, query }) => {
 	return (
 		<App>
 			{
 				searchResult.success ?
-					<Search searchData={searchResult.data} /> :
+					<Search searchData={searchResult.data} query={query} /> :
 					<ParserError error={searchResult.data} />
 			}
 		</App>
@@ -27,12 +29,18 @@ const SearchParser: React.FC<SearchParserProps> = ({ searchResult }) => {
 
 interface SearchProps {
 	searchData: MediaResult;
+	query: string;
 }
 
-const Search: React.FC<SearchProps> = ({ searchData }) => {
+const Search: React.FC<SearchProps> = ({ searchData, query }) => {
 
 	const cookies = useMediaList()
+	const { add } = useSearchHistory()
 	const [data, setData] = useState<(MovieResult | TVResult)[]>(removePeople(searchData))
+
+	useEffect(() => {
+		add(query)
+	}, [add, query])
 
 	useEffect(() => {
 		if (searchData.page === 1) {
@@ -71,7 +79,8 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 
 	return {
 		props: {
-			searchResult: data
+			searchResult: data,
+			query: queryString
 		}
 	}
 }

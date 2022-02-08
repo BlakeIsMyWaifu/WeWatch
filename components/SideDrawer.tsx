@@ -129,8 +129,8 @@ const SideDrawer: React.FC = ({ children }) => {
 				<Divider />
 				<List>
 					<CustomListItem name='Home' icon={<HomeIcon />} href={'/'} />
-					<CustomListItem name='Search' icon={<SearchIcon />} />
-					<CustomListItem name='Trending' icon={<TrendingUpIcon />} href='trending' />
+					<CustomListItem name='Search' icon={<SearchIcon />} href='/search' />
+					<CustomListItem name='Trending' icon={<TrendingUpIcon />} href='/trending' />
 				</List>
 			</Drawer>
 			<Box
