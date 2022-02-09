@@ -43,7 +43,7 @@ const useMediaList = (): UseMediaList => {
 
 		updateCookie(updatedLists)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [lists])
 
 	const removeMedia = useCallback((id: number, listName: string): void => {
 		if (!lists[listName]?.[id]) return
@@ -53,7 +53,7 @@ const useMediaList = (): UseMediaList => {
 
 		updateCookie(updatedLists)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [lists])
 
 	const addList = useCallback((list: string): void => {
 		const updatedLists: MediaListCookie = {
@@ -63,7 +63,7 @@ const useMediaList = (): UseMediaList => {
 
 		updateCookie(updatedLists)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [lists])
 
 	const clearEmptyLists = useCallback((): void => {
 		const filteredList = Object.entries(lists).filter(([_key, value]) => Object.keys(value).length)
@@ -71,7 +71,7 @@ const useMediaList = (): UseMediaList => {
 
 		updateCookie(updatedLists)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [lists])
 
 	return {
 		lists,
