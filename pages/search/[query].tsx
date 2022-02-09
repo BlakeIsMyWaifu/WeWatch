@@ -1,3 +1,4 @@
+import { LoadingButton } from '@mui/lab'
 import { Box } from '@mui/material'
 import App from 'components/App'
 import Media from 'components/Media'
@@ -5,9 +6,10 @@ import ParserError from 'components/ParserError'
 import useMediaList from 'hooks/useMediaList'
 import useSearchHistory from 'hooks/useSearchHistory'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import getData, { GetData } from 'utils/getData'
 import { MediaResult, MovieResult, TVResult, removePeople } from 'utils/mediaTypes'
+import parameterToString from 'utils/parameterToString'
 import parseMediaData from 'utils/parseMediaData'
 
 interface SearchParserProps {
@@ -36,29 +38,52 @@ const Search: React.FC<SearchProps> = ({ searchData, query }) => {
 
 	const cookies = useMediaList()
 	const { add } = useSearchHistory()
-	const [data, setData] = useState<(MovieResult | TVResult)[]>(removePeople(searchData))
+	const [mediaData, setMediaData] = useState<(MovieResult | TVResult)[]>(removePeople(searchData))
+	const [currentPage, setCurrentPage] = useState<number>(1)
+	const [loadingMore, setLoadingMore] = useState<boolean>(false)
+
+	const fetchMoreMedia = useCallback(async (): Promise<void> => {
+		setLoadingMore(true)
+		const { success, data } = await fetch(`/api/search?q=${query}&p=${currentPage + 1}`).then(a => a.json())
+		if (success) {
+			setCurrentPage(currentPage + 1)
+			setMediaData([...mediaData, ...removePeople(data)])
+		}
+		setLoadingMore(false)
+	}, [currentPage, mediaData, query])
 
 	useEffect(() => {
 		add(query)
-	}, [add, query])
-
-	useEffect(() => {
-		if (searchData.page === 1) {
-			setData(removePeople(searchData))
-		}
-	}, [searchData])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<Box sx={{
 			display: 'flex',
-			gap: '8px',
-			flexWrap: 'wrap'
+			flexDirection: 'column',
+			alignItems: 'center'
 		}}>
-			{
-				data.map((result, i) => {
-					return <Media key={i} mediaData={parseMediaData(result)} cookies={cookies} />
-				})
-			}
+			<Box sx={{
+				display: 'flex',
+				gap: '8px',
+				flexWrap: 'wrap'
+			}}>
+				{
+					mediaData.map((result, i) => {
+						return <Media key={i} mediaData={parseMediaData(result)} cookies={cookies} />
+					})
+				}
+			</Box>
+			<LoadingButton
+				variant='contained'
+				loadingIndicator='Loading...'
+				loading={loadingMore}
+				onClick={fetchMoreMedia}
+				sx={{
+					maxWidth: 300,
+					margin: 5
+				}}
+			>Load More</LoadingButton>
 		</Box>
 	)
 }
@@ -67,7 +92,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
 
 	const { query } = context.query
 
-	const queryString = typeof query === 'object' ? query[0] : query ?? ''
+	const queryString = parameterToString(query)
 
 	const parameters = new URLSearchParams()
 	parameters.set('language', 'en')

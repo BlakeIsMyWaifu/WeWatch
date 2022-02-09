@@ -1,34 +1,37 @@
 import { CookieAttributes } from 'js-cookie'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import useCookie from './useCookie'
 
 const useSearchHistory = () => {
 	const cookieOptions: CookieAttributes = { sameSite: 'strict' }
 
-	const [listValue, updateList] = useCookie<string[]>('search', [], cookieOptions)
+	const [listValue, updateCookie] = useCookie<string[]>('search', [], cookieOptions)
 
 	const list = useMemo(() => {
 		return listValue ?? []
 	}, [listValue])
 
-	const add = (data: string): void => {
+	const add = useCallback((data: string): void => {
 		const updatedList = new Set(list)
 		updatedList.add(data)
 
-		updateList(Array.from(updatedList))
-	}
+		updateCookie(Array.from(updatedList))
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
-	const remove = (data: string): void => {
+	const remove = useCallback((data: string): void => {
 		const updatedList = new Set(list)
 		updatedList.delete(data)
 
-		updateList(Array.from(updatedList))
-	}
+		updateCookie(Array.from(updatedList))
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
-	const clear = (): void => {
-		updateList([])
-	}
+	const clear = useCallback((): void => {
+		updateCookie([])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return {
 		list,
