@@ -1,8 +1,7 @@
-import { CookieAttributes } from 'js-cookie'
 import { useCallback, useMemo } from 'react'
 import { MediaData } from 'utils/parseMediaData'
 
-import useCookie from './useCookie'
+import useCookie, { cookieOptions } from './useCookie'
 
 interface MediaCookie extends MediaData {
 	list: string;
@@ -19,8 +18,6 @@ export interface UseMediaList {
 }
 
 const useMediaList = (): UseMediaList => {
-	const cookieOptions: CookieAttributes = { sameSite: 'strict' }
-
 	const [listValue, updateCookie] = useCookie<MediaListCookie>('list', {}, cookieOptions)
 
 	const lists = useMemo(() => {

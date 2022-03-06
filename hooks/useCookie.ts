@@ -1,7 +1,10 @@
 import Cookies, { CookieAttributes } from 'js-cookie'
 import { useCallback, useState } from 'react'
 
-const useCookie = <T extends object>(name: string, defaultValue: T | null = null, options?: CookieAttributes): [T | null, (newValue: T) => void, () => void] => {
+export const cookieOptions: CookieAttributes = { sameSite: 'strict', expires: 365 }
+
+const useCookie = <T extends object>(name: string, defaultValue: T | null = null, options: CookieAttributes = {}): [T | null, (newValue: T) => void, () => void] => {
+
 	const [value, setValue] = useState<T | null>(() => {
 		const cookie = Cookies.get(name)
 		if (cookie) return JSON.parse(cookie)

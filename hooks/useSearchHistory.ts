@@ -1,11 +1,8 @@
-import { CookieAttributes } from 'js-cookie'
 import { useCallback, useMemo } from 'react'
 
-import useCookie from './useCookie'
+import useCookie, { cookieOptions } from './useCookie'
 
 const useSearchHistory = () => {
-	const cookieOptions: CookieAttributes = { sameSite: 'strict' }
-
 	const [listValue, updateCookie] = useCookie<string[]>('search', [], cookieOptions)
 
 	const list = useMemo(() => {
